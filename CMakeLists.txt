@@ -432,9 +432,7 @@ set_glob(ENGINE_SERVER GLOB src/engine/server
   register.h
   server.cpp
   server.h
-  misc/versionsrv.h
-  misc/mapversions.h
-  misc/mastersrv.h
+  mastersrv.h
 )
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entities/character.cpp

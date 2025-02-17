@@ -20,5 +20,5 @@ This is a foundation\frame for single gametype teeworlds mod (with some ddnet fe
 **Changelog**
 -----------------------
 
-* Content unrelated to server removed
 * Removed gametypes
+* Content unrelated to server removed

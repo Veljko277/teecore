@@ -26,8 +26,7 @@
 #include <engine/shared/protocol.h>
 #include <engine/shared/snapshot.h>
 
-#include <engine/server/misc/mastersrv.h>
-
+#include "mastersrv.h"
 #include "register.h"
 #include "server.h"
 

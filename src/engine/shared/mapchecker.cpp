@@ -5,8 +5,6 @@
 
 #include <engine/storage.h>
 
-#include <engine/server/misc/versionsrv.h>
-#include <engine/server/misc/mapversions.h>
 
 #include "datafile.h"
 #include "memheap.h"
@@ -15,7 +13,6 @@
 CMapChecker::CMapChecker()
 {
 	Init();
-	SetDefaults();
 }
 
 void CMapChecker::Init()
@@ -23,12 +20,6 @@ void CMapChecker::Init()
 	m_Whitelist.Reset();
 	m_pFirst = 0;
 	m_RemoveDefaultList = false;
-}
-
-void CMapChecker::SetDefaults()
-{
-	AddMaplist(s_aMapVersionList, s_NumMapVersionItems);
-	m_RemoveDefaultList = true;
 }
 
 void CMapChecker::AddMaplist(CMapVersion *pMaplist, int Num)

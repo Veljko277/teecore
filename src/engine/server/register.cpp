@@ -6,8 +6,7 @@
 #include <engine/console.h>
 #include <engine/masterserver.h>
 
-#include <engine/server/misc/mastersrv.h>
-
+#include "mastersrv.h"
 #include "register.h"
 
 CRegister::CRegister()
