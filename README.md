@@ -1,5 +1,5 @@
 # TeeCore
-This is a foundation for single gametype teeworlds mod (with some ddnet features)
+This is a foundation\frame for single gametype teeworlds mod (with some ddnet features)
 
 *Begun as a fork of tw+ by [Pointer13](https://github.com/Pointer31)*\
 *Included maps and some features are from the pointers fork*\
@@ -20,5 +20,5 @@ This is a foundation for single gametype teeworlds mod (with some ddnet features
 **Changelog**
 -----------------------
 
-* Prefer ninja
+* Content unrelated to server removed
 * Removed gametypes
