@@ -19,7 +19,7 @@ IGameController::IGameController(class CGameContext *pGameServer)
 {
 	m_pGameServer = pGameServer;
 	m_pServer = m_pGameServer->Server();
-	m_pGameType = "GameTypeHere";
+	m_pGameType = "teecore";
 
 	//
 	DoWarmup(g_Config.m_SvWarmup);

@@ -158,11 +158,11 @@ public:
 	};
 	int m_Flags;
 
-	virtual bool IsInstagib() { return m_Flags&GAMETYPE_INSTAGIB; }
-	virtual bool IsGrenade() { return m_Flags&GAMETYPE_GCTF; }
-	virtual bool IsLMS() { return m_Flags&GAMETYPE_LMS; }
-	virtual bool IsNoPickups() { return m_Flags&GAMETYPE_NOPICKUPS; }
-	virtual bool IsIFreeze() { return m_Flags&GAMETYPE_IFREEZE; }
+	virtual bool IsInstagib() { return false; }//m_Flags&GAMETYPE_INSTAGIB; }
+	virtual bool IsGrenade() { return false; }//m_Flags&GAMETYPE_GCTF; }
+	virtual bool IsLMS() { return false; }//m_Flags&GAMETYPE_LMS; }
+	virtual bool IsNoPickups() { return false; }//m_Flags&GAMETYPE_NOPICKUPS; }
+	virtual bool IsIFreeze() { return false; }//m_Flags&GAMETYPE_IFREEZE; }
 	int IsWarmup() { return m_Warmup; }
 	int m_FakeWarmup;
 	void SaveStats();

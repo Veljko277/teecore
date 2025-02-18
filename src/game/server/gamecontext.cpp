@@ -1160,12 +1160,12 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 						break;
 					case EMOTICON_OOP:
 					case EMOTICON_SORRY:
+					case EMOTICON_SUSHI:
 						Emote = EMOTE_PAIN;
 						break;
 					case EMOTICON_DEVILTEE:
 					case EMOTICON_SPLATTEE:
 					case EMOTICON_ZOMG:
-					case EMOTICON_SUSHI:
 						Emote = EMOTE_ANGRY;
 						break;
 				}
