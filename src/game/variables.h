@@ -4,57 +4,6 @@
 #define GAME_VARIABLES_H
 #undef GAME_VARIABLES_H // this file will be included several times
 
-
-// client
-MACRO_CONFIG_INT(ClPredict, cl_predict, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Predict client movements")
-MACRO_CONFIG_INT(ClNameplates, cl_nameplates, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show name plates")
-MACRO_CONFIG_INT(ClNameplatesAlways, cl_nameplates_always, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Always show name plates disregarding of distance")
-MACRO_CONFIG_INT(ClNameplatesTeamcolors, cl_nameplates_teamcolors, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Use team colors for name plates")
-MACRO_CONFIG_INT(ClNameplatesSize, cl_nameplates_size, 50, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Size of the name plates from 0 to 100%")
-MACRO_CONFIG_INT(ClAutoswitchWeapons, cl_autoswitch_weapons, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto switch weapon on pickup")
-
-MACRO_CONFIG_INT(ClShowhud, cl_showhud, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show ingame HUD")
-MACRO_CONFIG_INT(ClShowChatFriends, cl_show_chat_friends, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show only chat messages from friends")
-MACRO_CONFIG_INT(ClShowfps, cl_showfps, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show ingame FPS counter")
-
-MACRO_CONFIG_INT(ClAirjumpindicator, cl_airjumpindicator, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-MACRO_CONFIG_INT(ClThreadsoundloading, cl_threadsoundloading, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Load sound files threaded")
-
-MACRO_CONFIG_INT(ClWarningTeambalance, cl_warning_teambalance, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Warn about team balance")
-
-MACRO_CONFIG_INT(ClMouseDeadzone, cl_mouse_deadzone, 300, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-MACRO_CONFIG_INT(ClMouseFollowfactor, cl_mouse_followfactor, 60, 0, 200, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-MACRO_CONFIG_INT(ClMouseMaxDistance, cl_mouse_max_distance, 800, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-
-MACRO_CONFIG_INT(EdShowkeys, ed_showkeys, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-
-//MACRO_CONFIG_INT(ClFlow, cl_flow, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-
-MACRO_CONFIG_INT(ClShowWelcome, cl_show_welcome, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "")
-MACRO_CONFIG_INT(ClMotdTime, cl_motd_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "How long to show the server message of the day")
-
-MACRO_CONFIG_STR(ClVersionServer, cl_version_server, 100, "version.teeworlds.com", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Server to use to check for new versions")
-
-MACRO_CONFIG_STR(ClLanguagefile, cl_languagefile, 255, "", CFGFLAG_CLIENT|CFGFLAG_SAVE, "What language file to use")
-
-MACRO_CONFIG_INT(PlayerUseCustomColor, player_use_custom_color, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Toggles usage of custom colors")
-MACRO_CONFIG_INT(PlayerColorBody, player_color_body, 65408, 0, 0xFFFFFF, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player body color")
-MACRO_CONFIG_INT(PlayerColorFeet, player_color_feet, 65408, 0, 0xFFFFFF, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player feet color")
-MACRO_CONFIG_STR(PlayerSkin, player_skin, 24, "default", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player skin")
-
-MACRO_CONFIG_INT(UiPage, ui_page, 6, 0, 10, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface page")
-MACRO_CONFIG_INT(UiToolboxPage, ui_toolbox_page, 0, 0, 2, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Toolbox page")
-MACRO_CONFIG_STR(UiServerAddress, ui_server_address, 64, "localhost:8303", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface server address")
-MACRO_CONFIG_INT(UiScale, ui_scale, 100, 50, 150, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface scale")
-MACRO_CONFIG_INT(UiMousesens, ui_mousesens, 100, 5, 100000, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Mouse sensitivity for menus/editor")
-
-MACRO_CONFIG_INT(UiColorHue, ui_color_hue, 160, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface color hue")
-MACRO_CONFIG_INT(UiColorSat, ui_color_sat, 70, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface color saturation")
-MACRO_CONFIG_INT(UiColorLht, ui_color_lht, 175, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface color lightness")
-MACRO_CONFIG_INT(UiColorAlpha, ui_color_alpha, 228, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface alpha")
-
-MACRO_CONFIG_INT(GfxNoclip, gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disable clipping")
-
 // server
 MACRO_CONFIG_INT(SvWarmup, sv_warmup, 0, 0, 0, CFGFLAG_SERVER, "Number of seconds to do warmup before round starts")
 MACRO_CONFIG_STR(SvMotd, sv_motd, 900, "", CFGFLAG_SERVER, "Message of the day to display for the clients")
@@ -105,7 +54,7 @@ MACRO_CONFIG_INT(SvAntiCapslock, sv_anticapslock, 0, 0, 1, CFGFLAG_SERVER, "If a
 MACRO_CONFIG_INT(SvAntiCapslockTolerance, sv_anticapslock_tolerance, 5, 0, 10, CFGFLAG_SERVER, "How many letters of 10 are allowed to be lowercased that it just work")
 MACRO_CONFIG_INT(SvAntiCapslockMinimum, sv_anticapslock_minimum, 8, 1, 128, CFGFLAG_SERVER, "Minimum number of letters that the anti-capslock feature works")
 
-//Anticamper
+// Anticamper
 MACRO_CONFIG_INT(SvAnticamper, sv_anticamper, 0, 0, 2, CFGFLAG_SERVER, "0 disables, 1 enables anticamper in all modes and 2 only in instagib gamemodes")
 MACRO_CONFIG_INT(SvAnticamperFreeze, sv_anticamper_freeze, 0, 0, 15, CFGFLAG_SERVER, "If a player should freeze on camping (and how long) or die")
 MACRO_CONFIG_INT(SvAnticamperTime, sv_anticamper_time, 9, 5, 20, CFGFLAG_SERVER, "How many seconds to wait till the player dies/freezes")
@@ -122,7 +71,7 @@ MACRO_CONFIG_INT(SvEmotionalTees, sv_emotional_tees, 1, 0, 1, CFGFLAG_SERVER, "E
 MACRO_CONFIG_INT(SvPrivateMessage, sv_private_message, 1, 0, 1, CFGFLAG_SERVER, "Enable/Disable private message")
 MACRO_CONFIG_INT(SvSpawnprotection, sv_spawnprotection, 0, 0, 5, CFGFLAG_SERVER, "Spawnprotection in seconds (0 disables)")
 MACRO_CONFIG_INT(SvLaserReloadTime, sv_laser_reload_time, 800, 0, 2400, CFGFLAG_SERVER, "Reload-time for laser when you are not at killing-spree (Default: 800)")
-//
+// Stats
 MACRO_CONFIG_STR(SvStatsFile, sv_stats_file, 256, "stats.txt", CFGFLAG_SERVER, "Name of the file where the statistics are stored in")
 MACRO_CONFIG_INT(SvStatsOutputlevel, sv_stats_outputlevel, 0, 0, 3, CFGFLAG_SERVER, "How much informations in the statistics-file should be saved (0 to disable saving)")
 //
@@ -140,7 +89,7 @@ MACRO_CONFIG_INT(SvGrenadeMinDamage, sv_grenade_min_damage, 4, 3, 6, CFGFLAG_SER
 MACRO_CONFIG_INT(SvGrenadeAmmo, sv_grenade_ammo, 6, -1, 10, CFGFLAG_SERVER, "How much ammo for the grenade")
 MACRO_CONFIG_INT(SvGrenadeAmmoRegen, sv_grenade_ammo_regen, 1000, 800, 2000, CFGFLAG_SERVER, "Time till one bullet regenerates")
 
-//iFreeze
+// iFreeze
 MACRO_CONFIG_INT(SvIFreezeAutomeltTime, sv_ifreeze_automelt_time, 30, 10, 120, CFGFLAG_SERVER, "Time till the player respawn automatically when he's frozen")
 MACRO_CONFIG_INT(SvIFreezeMeltRange, sv_ifreeze_melt_range, 100, 10, 1000, CFGFLAG_SERVER, "Maximum range to melt a player")
 MACRO_CONFIG_INT(SvIFreezeMeltTime, sv_ifreeze_melt_time, 1200, 500, 5000, CFGFLAG_SERVER, "Time (in ms) the player must stand next to a player to melt him")
@@ -156,7 +105,7 @@ MACRO_CONFIG_INT(SvKillingspreeAwardLasers, sv_kspree_award_laser, 3, 1, 10, CFG
 MACRO_CONFIG_INT(SvKillingspreeAwardLasersSplit, sv_kspree_award_laser_split, 1, 1, 10, CFGFLAG_SERVER, "Split of the lasers while having the award")
 MACRO_CONFIG_INT(SvKillingspreeAwardFiredelay, sv_kspree_award_laser_firedelay, 100, 0, 800, CFGFLAG_SERVER, "Firedelay of the weapon when you got the award")
 
-//ninja and custom silly weapons
+// Ninja and custom silly weapons
 MACRO_CONFIG_INT(SvNinjaConstantSpeed, sv_ninja_constant_speed, 10, -50, 50, CFGFLAG_SERVER, "What speed the ninja should have after slashing")
 MACRO_CONFIG_INT(SvNinjaInvincible, sv_ninja_invincible, 0, 0, 1, CFGFLAG_SERVER, "Whether or not to have the ninja not take any damage")
 MACRO_CONFIG_INT(SvNinjaAllWeapons, sv_ninja_weapon_fight, 0, 0, 1, CFGFLAG_SERVER, "Whether or not to have the ninja use all other weapons while slashing")
@@ -191,8 +140,6 @@ MACRO_CONFIG_INT(SvHookkill, sv_indirect_kill, 1, 0, 1, CFGFLAG_SERVER, "(WIP) W
 MACRO_CONFIG_INT(SvIndirectKillTicks, sv_indirect_kill_ticks, 100, 0, 1000, CFGFLAG_SERVER, "Ticks after being hooked that will still count as a kill")
 
 MACRO_CONFIG_INT(SvChatMe, sv_slash_me, 1, 0, 1, CFGFLAG_SERVER, "Whether or not to enable /me usage")
-
-//MACRO_CONFIG_INT(SvTuneReset, sv_tune_reset, 5, 0, 10, CFGFLAG_SERVER, "(WIP) Whether tuning is reset after each map change or not")
 
 MACRO_CONFIG_INT(SvRoundendMessage, sv_roundend_message, 1, 0, 1, CFGFLAG_SERVER, "Whether or not to enable the system message that shows who won on round end")
 

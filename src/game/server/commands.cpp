@@ -48,73 +48,13 @@ bool CGameContext::ShowCommand(int ClientID, CPlayer* pPlayer, const char* pMess
 		SendChatTarget(ClientID, "Credits goes to the whole Teeworlds-community and especially");
 		SendChatTarget(ClientID, "to BotoX, Tom and Greyfox. This mod has some of their ideas included.");
 		SendChatTarget(ClientID, "Also thanks to fisted and eeeee for their amazing loltext.");
-		SendChatTarget(ClientID, "Slightly modified by Pointer.");
+		SendChatTarget(ClientID, "Slightly modified by Pointer & veqi");
 		return false;
 	}
 	else if(StrLeftComp(pMessage, "help"))
 	{
-		if (StrLeftComp(GameType(), "DM+")) {
-			SendChatTarget(ClientID, "DM+ gametype: 'death match'. Kill other tees for points. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "CTF+")) {
-			SendChatTarget(ClientID, "CTF+ gametype: 'capture the flag'. Pick up the flag of the other team and bring it to your own flag for points. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "TDM+")) {
-			SendChatTarget(ClientID, "TDM+ gametype: 'team death match'. Kill tees of the other team for points. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		}
-		else if (StrLeftComp(GameType(), "gDM+")) {
-			SendChatTarget(ClientID, "gDM+ gametype: 'death match'. Kill other tees for points. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "gCTF+")) {
-			SendChatTarget(ClientID, "gCTF+ gametype: 'capture the flag'. Pick up the flag of the other team and bring it to your own flag for points. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "gTDM+")) {
-			SendChatTarget(ClientID, "gTDM+ gametype: 'team death match'. Kill tees of the other team for points. You can only use your grenade launcher, and it insta-kills");
-		}
-		else if (StrLeftComp(GameType(), "iDM+")) {
-			SendChatTarget(ClientID, "iDM+ gametype: 'death match'. Kill other tees for points. You can only use your laser rifle, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iCTF+")) {
-			SendChatTarget(ClientID, "iCTF+ gametype: 'capture the flag'. Pick up the flag of the other team and bring it to your own flag for points. You can only use your laser rifle, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iTDM+")) {
-			SendChatTarget(ClientID, "iTDM+ gametype: 'team death match'. Kill tees of the other team for points. You can only use your laser rifle, and it insta-kills");
-		}
-		else if (StrLeftComp(GameType(), "HTF")) {
-			SendChatTarget(ClientID, "HTF gametype: 'hold the flag'. While holding the flag you gain points. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "gHTF")) {
-			SendChatTarget(ClientID, "gHTF gametype: 'hold the flag'. While holding the flag you gain points. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iHTF")) {
-			SendChatTarget(ClientID, "iHTF gametype: 'hold the flag'. While holding the flag you gain points. You can only use your laser rifle, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "THTF")) {
-			SendChatTarget(ClientID, "THTF gametype: 'team hold the flag'. While holding the flag your team gains points. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "gTHTF")) {
-			SendChatTarget(ClientID, "gTHTF gametype: 'team hold the flag'. While holding the flag your team gains points. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iTHTF")) {
-			SendChatTarget(ClientID, "iTHTF gametype: ' team hold the flag'. While holding the flag your team gains points. You can only use your laser rifle, and it insta-kills");
-		}
-		else if (StrLeftComp(GameType(), "LMS+")) {
-			SendChatTarget(ClientID, "LMS+ gametype: 'last man standing'. Kill all others, but avoid dying too much to win. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "gLMS+")) {
-			SendChatTarget(ClientID, "gLMS+ gametype: 'last man standing'. Kill all others, but avoid dying too much to win. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iLMS+")) {
-			SendChatTarget(ClientID, "iLMS+ gametype: 'last man standing'. Kill all others, but avoid dying too much to win. You can only use your laser rifle, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "LTS+")) {
-			SendChatTarget(ClientID, "LTS+ gametype: 'last team standing'. Kill the other team, but avoid dying too much to win. You can pick up weapons to use. Pick up hearts and shields to restore your health and armor!");
-		} else if (StrLeftComp(GameType(), "gLTS+")) {
-			SendChatTarget(ClientID, "gLTS+ gametype: 'last team standing'. Kill the other team, but avoid dying too much to win. You can only use your grenade launcher, and it insta-kills");
-		} else if (StrLeftComp(GameType(), "iLTS+")) {
-			SendChatTarget(ClientID, "iLTS+ gametype: 'last team standing'. Kill the other team, but avoid dying too much to win. You can only use your laser rifle, and it insta-kills");
-		}
-		else if (StrLeftComp(GameType(), "iFreeze+")) {
-			SendChatTarget(ClientID, "iFreeze gametype: freeze all tees of the other team to win. Stand near a frozen teammate to melt them.");
-		} else if (StrLeftComp(GameType(), "nDM+")) {
-			char aBuf[1024] = "No message (this should not appear)";
-			str_format(aBuf, sizeof(aBuf), "No items Death Match: Kill other tees for points. You can only use one weapon. The weapon will change every %d seconds", g_Config.m_SvNDMTime);
-			SendChatTarget(ClientID, aBuf);
-		}
-		else {
-			SendChatTarget(ClientID, "The current gametype is unknown");
-		}
-		// SendChatTarget(ClientID, "DM gametype: 'death match'; you kill other tees, and get points. The player with the most points wins.");
-		// SendChatTarget(ClientID, "TDM gametype: same as dm, but with teams.");
-		// SendChatTarget(ClientID, "CTF gametype: 'capture the flag'; take the other team's flag to your own, and get points for your team.");
-		// SendChatTarget(ClientID, "(g) stand for grenade; (i) for instagib.");
-		// SendChatTarget(ClientID, "iFreeze gametype: freeze all tees of the other team to win. Stand near your teammates to melt them.");
+
+		SendChatTarget(ClientID, "nothing here try /cmdlist or /credits");
 		return false;
 	}
 	else if(StrLeftComp(pMessage, "cmdlist"))

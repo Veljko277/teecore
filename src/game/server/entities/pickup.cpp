@@ -36,14 +36,14 @@ void CPickup::Tick()
 	// wait for respawn
 	if(m_SpawnTick > 0)
 	{
-		if (Server()->Tick() % 2 == 0 && g_Config.m_SvPickupParticles) {
+		/*if (Server()->Tick() % 2 == 0 && g_Config.m_SvPickupParticles) {
 			CProjectile *pProj = new CProjectile(GameWorld(), WEAPON_HAMMER,
 											 -1,
 											 {m_Pos.x - WIDTH_TILE/2 + rand() % WIDTH_TILE, m_Pos.y - WIDTH_TILE/2 + rand() % WIDTH_TILE},
 											 {0,1},
 											 10,
 											 0, 0, 0, -1, WEAPON_HAMMER);
-		}
+		}*/
 		if(Server()->Tick() > m_SpawnTick)
 		{
 			// respawn
@@ -170,7 +170,7 @@ void CPickup::Snap(int SnappingClient)
 		CNetObj_Pickup *pP2 = static_cast<CNetObj_Pickup *>(Server()->SnapNewItem(NETOBJTYPE_PICKUP, m_ID2, sizeof(CNetObj_Pickup)));
 		if(!pP2)
 			return;
-		
+
 		float t = Server()->Tick();
 		if (GameServer()->m_World.m_Paused)
 			t = 0.0;

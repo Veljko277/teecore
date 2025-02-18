@@ -598,7 +598,7 @@ void CCharacter::FireWeapon()
 			FireDelay = g_Config.m_SvLaserReloadTime;
 			if (g_Config.m_SvPlasmaGun || m_has_plasmagun)
 				FireDelay = g_Config.m_SvPlasmaGunFireDelay;
-		} else if (m_ActiveWeapon == WEAPON_SHOTGUN && g_Config.m_SvShotgunRepeater) 
+		} else if (m_ActiveWeapon == WEAPON_SHOTGUN && g_Config.m_SvShotgunRepeater)
 		{
 			FireDelay = g_Config.m_SvShotgunRepeaterFireDelay;
 		}
@@ -680,7 +680,7 @@ bool CCharacter::GiveWeapon(int Weapon, int Ammo)
 			Weapon = WEAPON_HAMMER; m_aWeapons[Weapon].m_Ammo = 0; m_has_superhammer = true;
 		} else if (Weapon == WEAPON_GUN_SUPER) {
 			Weapon = WEAPON_GUN; m_aWeapons[Weapon].m_Ammo = 0; m_has_supergun = true;
-		} else 
+		} else
 			Weapon = WEAPON_SHOTGUN;
 	}
 
@@ -993,7 +993,7 @@ void CCharacter::Tick()
 					else
 						Die(m_pPlayer->GetCID(), WEAPON_NINJA);
 				}
-					
+
 				GameServer()->CreateSound(m_Pos, SOUND_PLAYER_PAIN_SHORT);
 				m_EmoteType = EMOTE_PAIN;
 				m_EmoteStop = Server()->Tick() + 500 * Server()->TickSpeed() / 1000;
@@ -1037,13 +1037,21 @@ void CCharacter::Tick()
 			m_healthArmorZoneTick = g_Config.m_SvHealthArmorZoneTicks;
 		}
 	}
-if ((GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 3.f, m_Pos.y - m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
-			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 3.f, m_Pos.y + m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
-			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 3.f, m_Pos.y - m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
-			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 3.f, m_Pos.y + m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST))
-	{
-		m_Core.m_Vel += {0, -5};
-	}
+    if ((GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 3.f, m_Pos.y - m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
+    			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 3.f, m_Pos.y + m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
+    			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 3.f, m_Pos.y - m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST ||
+    			 GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 3.f, m_Pos.y + m_ProximityRadius / 3.f) == TILE_SPEEDUPFAST))
+    	{
+    		m_Core.m_Vel += {0, -5};
+    	}
+    if ((GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 100.f, m_Pos.y - m_ProximityRadius / 100.f) == TILE_FREEZE ||
+        GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 100.f, m_Pos.y + m_ProximityRadius / 100.f) == TILE_FREEZE ||
+        GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 100.f, m_Pos.y - m_ProximityRadius / 100.f) == TILE_FREEZE ||
+        GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 100.f, m_Pos.y + m_ProximityRadius / 100.f) == TILE_FREEZE))
+    {
+        Freeze(3);//m_FreezeTicks = 120;
+    };
+
 
 	if (m_Core.m_WillExplode && m_ActiveWeapon != WEAPON_NINJA) {
 		Die(m_pPlayer->GetCID(), WEAPON_NINJA);
@@ -1053,6 +1061,8 @@ if ((GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 
 
 	// handle Weapons
 	HandleWeapons();
+
+	//m_LastHooked-=1; // attempt
 
 	// Previnput
 	m_PrevInput = m_Input;
@@ -1114,7 +1124,7 @@ void CCharacter::TickDefered()
 		GameServer()->CreateSound(m_Pos, SOUND_PLAYER_JUMP, Mask);
 		if (GameServer()->Collision()->GetCollisionAtNew(m_Pos.x - m_ProximityRadius / 3.f, m_Pos.y + 2*WIDTH_TILE) == TILE_SPEEDUPFAST ||
 			GameServer()->Collision()->GetCollisionAtNew(m_Pos.x + m_ProximityRadius / 3.f, m_Pos.y + 2*WIDTH_TILE) == TILE_SPEEDUPFAST)
-			m_Core.m_Vel = {m_Core.m_Vel.x, m_Core.m_Vel.y * 2};
+			m_Core.m_Vel.y*=2;
 	}
 
 	if (Events & COREEVENT_HOOK_ATTACH_PLAYER)
@@ -1479,7 +1489,7 @@ void CCharacter::Snap(int SnappingClient)
 		pDDNetCharacter->m_Jumps = 2;
 		pDDNetCharacter->m_TeleCheckpoint = -1;
 		pDDNetCharacter->m_StrongWeakId = 0;
-		
+
 		pDDNetCharacter->m_JumpedTotal = m_Core.m_Jumped;
 		pDDNetCharacter->m_NinjaActivationTick = -1;
 		if (m_ActiveWeapon == WEAPON_NINJA)

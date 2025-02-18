@@ -455,7 +455,7 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entity.h
   mute.h
   mute.cpp
-  chatcmd.cpp
+  commands.cpp
   eventhandler.cpp
   eventhandler.h
   gamecontext.cpp

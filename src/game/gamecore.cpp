@@ -374,6 +374,7 @@ void CCharacterCore::Tick(bool UseInput)
 
 	// for indirect kills
 	m_LastHooked = m_LastHooked - 1;
+
 	if (m_LastHooked < 0)
 		m_LastHooked = 0;
 }
@@ -464,4 +465,3 @@ void CCharacterCore::Quantize()
 	Write(&Core);
 	Read(&Core);
 }
-

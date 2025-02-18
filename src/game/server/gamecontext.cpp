@@ -1177,12 +1177,12 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			if(pPlayer->m_LastKill && pPlayer->m_LastKill+Server()->TickSpeed()*3 > Server()->Tick())
 				return;
 
-			if(pPlayer->GetCharacter() && pPlayer->GetCharacter()->Frozen())
+			/*if(pPlayer->GetCharacter() && pPlayer->GetCharacter()->Frozen())
 			{
 				SendChatTarget(ClientID, "You can not commit suicide while you're frozen");
 				pPlayer->m_LastKill = Server()->Tick();
 				return;
-			}
+			}*/
 
 			pPlayer->m_LastKill = Server()->Tick();
 			pPlayer->KillCharacter(WEAPON_SELF);
