@@ -565,18 +565,6 @@ void CGameContext::OnTick()
 		}
 	}
 
-
-#ifdef CONF_DEBUG
-	if(g_Config.m_DbgDummies)
-	{
-		for(int i = 0; i < g_Config.m_DbgDummies ; i++)
-		{
-			CNetObj_PlayerInput Input = {0};
-			Input.m_Direction = (i&1)?-1:1;
-			m_apPlayers[MAX_CLIENTS-i-1]->OnPredictedInput(&Input);
-		}
-	}
-#endif
 }
 
 // Server hooks
@@ -617,13 +605,6 @@ void CGameContext::OnClientConnected(int ClientID)
 
 	(void)m_pController->CheckTeamBalance();
 
-#ifdef CONF_DEBUG
-	if(g_Config.m_DbgDummies)
-	{
-		if(ClientID >= MAX_CLIENTS-g_Config.m_DbgDummies)
-			return;
-	}
-#endif
 
 	// send active vote
 	if(m_VoteCloseTime)
@@ -1827,16 +1808,6 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	}
 
 	//game.world.insert_entity(game.Controller);
-
-#ifdef CONF_DEBUG
-	if(g_Config.m_DbgDummies)
-	{
-		for(int i = 0; i < g_Config.m_DbgDummies ; i++)
-		{
-			OnClientConnected(MAX_CLIENTS-i-1);
-		}
-	}
-#endif
 }
 
 void CGameContext::OnShutdown()

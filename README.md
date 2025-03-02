@@ -8,7 +8,7 @@ This is a foundation\frame for single gametype teeworlds mod
 **Building & Installing dependencies**
 -----------------------
     # Debian/Ubuntu
-    sudo apt install build-essential bam git python3 zlib1g-dev
+    sudo apt install build-essential bam git python3
     bam
 
 Changelog

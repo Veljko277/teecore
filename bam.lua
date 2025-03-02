@@ -89,42 +89,26 @@ function build(settings)
 
     settings.link.libs:Add("pthread")
     -- add ICU
-    if ExecuteSilent("pkg-config icu-uc icu-i18n") == 0 then
-    end
+    --if ExecuteSilent("pkg-config icu-uc icu-i18n") == 0 then end
     settings.cc.flags:Add("`pkg-config --cflags icu-uc icu-i18n`")
     settings.link.flags:Add("`pkg-config --libs icu-uc icu-i18n`")
 
-    -- compile zlib if needed
-    --[[if config.zlib.value == 1 then
-        settings.link.libs:Add("z")
-        if config.zlib.include_path then
-            settings.cc.includes:Add(config.zlib.include_path)
-        end
-        zlib = {}]]
-    --else
     zlib = Compile(settings, Collect("src/engine/external/zlib/*.c"))
     settings.cc.includes:Add("src/engine/external/zlib")
-    --end
 
     -- build the small libraries
     json = Compile(settings, "src/engine/external/json-parser/json.c")
     md5 = Compile(settings, Collect("src/engine/external/md5/*.c"))
-
     -- build game components
     engine_settings = settings:Copy()
     server_settings = engine_settings:Copy()
-    launcher_settings = engine_settings:Copy()
-    --
     engine = Compile(engine_settings, Collect("src/engine/shared/*.cpp", "src/base/*.c"))
     server = Compile(server_settings, Collect("src/engine/server/*.cpp"))
-    teeuniverses = Compile(server_settings,
-        Collect("src/teeuniverses/*.cpp", "src/teeuniverses/components/*.cpp", "src/teeuniverses/system/*.cpp"))
-
     game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source)
     game_server = Compile(settings, CollectRecursive("src/game/server/*.cpp"), server_content_source)
     -- build server
     server_exe = Link(server_settings, "teeworlds_srv", engine, server,
-        game_shared, game_server, zlib, md5, server_link_other, json, teeuniverses)
+        game_shared, game_server, zlib, md5, json)
 
     -- make targets
     s = PseudoTarget("server" .. "_" .. settings.config_name, server_exe, serverlaunch, icu_depends)
@@ -133,20 +117,9 @@ function build(settings)
     return all
 end
 
-debug_settings = NewSettings()
-debug_settings.config_name = "debug"
-debug_settings.config_ext = "_d"
-debug_settings.debug = 1
-debug_settings.optimize = 0
-debug_settings.cc.defines:Add("CONF_DEBUG")
+_settings = NewSettings()
+_settings.config_name = "release"
+_settings.debug = 0
+_settings.optimize = 0
 
-release_settings = NewSettings()
-release_settings.config_name = "release"
-release_settings.config_ext = ""
-release_settings.debug = 0
-release_settings.optimize = 1
-release_settings.cc.defines:Add("CONF_RELEASE")
-
-build(debug_settings)
-build(release_settings)
-DefaultTarget("server_debug")
+build(_settings)
