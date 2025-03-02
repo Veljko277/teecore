@@ -30,7 +30,7 @@
 #include "register.h"
 #include "server.h"
 
-#include <teeuniverses/components/localization.h>
+#include <engine/server/localization.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>

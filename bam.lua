@@ -11,7 +11,6 @@ function Script(name) return "python " .. name end
 
 function CHash(output, ...) -- used in generated files only
     local inputs = TableFlatten({ ... })
-
     output = Path(output)
 
     -- compile all the files
@@ -43,18 +42,6 @@ function ResCompile(scriptfile)
     return output
 end
 
---[[function Dat2c(datafile, sourcefile, arrayname)
-    datafile = Path(datafile)
-    sourcefile = Path(sourcefile)
-
-    AddJob(
-        sourcefile,
-        "dat2c " .. PathFilename(sourcefile) .. " = " .. PathFilename(datafile),
-        Script("scripts/dat2c.py") .. "\" " .. sourcefile .. " " .. datafile .. " " .. arrayname)
-    AddDependency(sourcefile, datafile)
-    return sourcefile
-    end]]
-
 function ContentCompile(action, output)
     output = Path(output)
     AddJob(
@@ -69,7 +56,7 @@ function ContentCompile(action, output)
     return output
 end
 
--- Content Compile
+-- Content Compile\Generate
 network_source = ContentCompile("network_source", "src/game/generated/protocol.cpp")
 network_header = ContentCompile("network_header", "src/game/generated/protocol.h")
 server_content_source = ContentCompile("server_content_source", "src/game/generated/server_data.cpp")
@@ -100,15 +87,12 @@ function build(settings)
     end
     settings.cc.includes:Add("src")
 
-    if family == "unix" then
-        settings.link.libs:Add("pthread")
-        -- add ICU for linux
-        if ExecuteSilent("pkg-config icu-uc icu-i18n") == 0 then
-        end
-
-        settings.cc.flags:Add("`pkg-config --cflags icu-uc icu-i18n`")
-        settings.link.flags:Add("`pkg-config --libs icu-uc icu-i18n`")
+    settings.link.libs:Add("pthread")
+    -- add ICU
+    if ExecuteSilent("pkg-config icu-uc icu-i18n") == 0 then
     end
+    settings.cc.flags:Add("`pkg-config --cflags icu-uc icu-i18n`")
+    settings.link.flags:Add("`pkg-config --libs icu-uc icu-i18n`")
 
     -- compile zlib if needed
     --[[if config.zlib.value == 1 then

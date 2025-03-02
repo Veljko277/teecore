@@ -11,7 +11,7 @@
 #include <game/gamecore.h>
 #include "gamemodes/mod.h"
 
-#include <teeuniverses/components/localization.h>
+#include <engine/server/localization.h>
 
 enum
 {
@@ -717,7 +717,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 			pPlayer->m_LastChat = Server()->Tick();
 
-			if(pMsg->m_pMessage[0] == '/' || pMsg->m_pMessage[0] == '\\')
+			if(pMsg->m_pMessage[0] == '/')
 			{
 				switch(m_apPlayers[ClientID]->m_Authed)
 				{

@@ -7,7 +7,7 @@
 #include <engine/console.h>
 #include <engine/shared/memheap.h>
 
-#include <teeuniverses/components/localization.h>
+#include <engine/server/localization.h>
 
 #include <game/layers.h>
 #include <game/voting.h>

@@ -3,8 +3,8 @@
 
 /* BEGIN EDIT *********************************************************/
 #include <base/tl/array.h>
-#include <teeuniverses/system/string.h>
-#include <teeuniverses/tl/allocator.h>
+#include <base/system/string.h>
+#include <base/tl/allocator2.h>
 /* END EDIT ***********************************************************/
 
 template <typename T, int TABLESIZE, typename ALLOCATOR = tu_allocator_default<T> >
@@ -18,7 +18,7 @@ protected:
 	public:
 		dynamic_string m_Key;
 		T m_Data;
-		
+
 		entry& operator=(const entry& old)
 		{
 			m_Key.copy(old.m_Key);
@@ -26,7 +26,7 @@ protected:
 			return *this;
 		}
 	};
-	
+
 protected:
 	array<entry> m_Table[TABLESIZE];
 
@@ -62,7 +62,7 @@ public:
 			if(str_comp(m_Table[Hash][i].m_Key.buffer(), pKey) == 0)
 				return &m_Table[Hash][i].m_Data;
 		}
-		
+
 		entry& NewEntry = m_Table[Hash].increment();
 		NewEntry.m_Key.copy(pKey);
 		return &NewEntry.m_Data;
@@ -83,7 +83,7 @@ public:
 				return &m_Table[Hash][i].m_Data;
 			}
 		}
-		
+
 		entry& NewEntry = m_Table[Hash].increment();
 		NewEntry.m_Key.copy(pKey);
 		ALLOCATOR::copy(NewEntry.m_Data, Data);
@@ -120,10 +120,10 @@ public:
 			if(str_comp(m_Table[Hash][i].m_Key.buffer(), pKey) == 0)
 				return &m_Table[Hash][i].m_Data;
 		}
-		
+
 		return 0;
 	}
-	
+
 	T* get(int Id, int SubId)
 	{
 		if(Id >= 0 && Id < TABLESIZE && SubId >= 0 && SubId < m_Table[Id].size())
@@ -131,7 +131,7 @@ public:
 		else
 			return 0;
 	}
-	
+
 	const char* get_key(int Id, int SubId) const
 	{
 		if(Id >= 0 && Id < TABLESIZE && SubId >= 0 && SubId < m_Table[Id].size())
@@ -139,7 +139,7 @@ public:
 		else
 			return 0;
 	}
-	
+
 	T* get(const char* pKey)
 	{
 		HASH Hash = hash(pKey);
@@ -148,10 +148,10 @@ public:
 			if(str_comp(m_Table[Hash][i].m_Key.buffer(), pKey) == 0)
 				return &m_Table[Hash][i].m_Data;
 		}
-		
+
 		return 0;
 	}
-	
+
 	int get_subtable_size(int Table) const
 	{
 		return m_Table[Table].size();
@@ -164,7 +164,7 @@ public:
 		hashtable* m_pHashTable;
 		int m_Id;
 		int m_SubId;
-	
+
 	public:
 		iterator() : m_pHashTable(0), m_Id(0), m_SubId(0) {}
 		iterator(hashtable* pHashTable) : m_pHashTable(pHashTable), m_SubId(0)
@@ -176,7 +176,7 @@ public:
 			}
 		}
 		iterator(hashtable* pHashTable, int Id, int SubId) : m_pHashTable(pHashTable), m_Id(Id), m_SubId(SubId) {}
-		
+
 		iterator& operator++()
 		{
 			if(m_Id < TABLESIZE)
@@ -195,7 +195,7 @@ public:
 				m_Id = TABLESIZE;
 				m_SubId = 0;
 			}
-			
+
 			return *this;
 		}
 		T* data() { return m_pHashTable->get(m_Id, m_SubId); }
