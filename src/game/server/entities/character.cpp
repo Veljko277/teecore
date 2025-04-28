@@ -4,6 +4,7 @@
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
 #include <game/mapitems.h>
+#include <game/zones.h>
 
 #include "character.h"
 #include "laser.h"
@@ -60,6 +61,8 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 	m_ActiveWeapon = WEAPON_GUN;
 	m_LastWeapon = WEAPON_HAMMER;
 	m_QueuedWeapon = -1;
+	m_TakeDamage = false;
+	m_Zone = ZONE_NORMAL;
 
 	m_pPlayer = pPlayer;
 	m_Pos = Pos;
@@ -91,22 +94,17 @@ void CCharacter::SetWeapon(int W)
 {
 	if(W == m_ActiveWeapon)
 		return;
-
 	m_LastWeapon = m_ActiveWeapon;
 	m_QueuedWeapon = -1;
 	m_ActiveWeapon = W;
 	GameServer()->CreateSound(m_Pos, SOUND_WEAPON_SWITCH);
-
 	if(m_ActiveWeapon < 0 || m_ActiveWeapon >= NUM_WEAPONS)
 		m_ActiveWeapon = 0;
 }
 
-bool CCharacter::IsGrounded()
-{
-	if(GameServer()->Collision()->CheckPoint(m_Pos.x+m_ProximityRadius/2, m_Pos.y+m_ProximityRadius/2+5))
-		return true;
-	if(GameServer()->Collision()->CheckPoint(m_Pos.x-m_ProximityRadius/2, m_Pos.y+m_ProximityRadius/2+5))
-		return true;
+bool CCharacter::IsGrounded() {
+	if(GameServer()->Collision()->CheckPoint(m_Pos.x+m_ProximityRadius/2, m_Pos.y+m_ProximityRadius/2+5)) return true;
+	if(GameServer()->Collision()->CheckPoint(m_Pos.x-m_ProximityRadius/2, m_Pos.y+m_ProximityRadius/2+5)) return true;
 	return false;
 }
 
@@ -293,14 +291,10 @@ void CCharacter::FireWeapon()
 			int Hits = 0;
 			int Num = GameServer()->m_World.FindEntities(ProjStartPos, m_ProximityRadius*0.5f, (CEntity**)apEnts,
 														MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
-
-			for (int i = 0; i < Num; ++i)
-			{
-				CCharacter *pTarget = apEnts[i];
-
+			for (int i = 0; i < Num; ++i)    {
+			    CCharacter *pTarget = apEnts[i];
 				if ((pTarget == this) || GameServer()->Collision()->IntersectLine(ProjStartPos, pTarget->m_Pos, NULL, NULL))
 					continue;
-
 				// set his velocity to fast upward (for now)
 				if(length(pTarget->m_Pos-ProjStartPos) > 0.0f)
 					GameServer()->CreateHammerHit(pTarget->m_Pos-normalize(pTarget->m_Pos-ProjStartPos)*m_ProximityRadius*0.5f);
@@ -312,7 +306,6 @@ void CCharacter::FireWeapon()
 					Dir = normalize(pTarget->m_Pos - m_Pos);
 				else
 					Dir = vec2(0.f, -1.f);
-
 				pTarget->TakeDamage(vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * 10.0f, g_pData->m_Weapons.m_Hammer.m_pBase->m_Damage,
 					m_pPlayer->GetCID(), m_ActiveWeapon);
 				Hits++;
@@ -540,17 +533,26 @@ void CCharacter::Tick()
 	{
 		Die(m_pPlayer->GetCID(), WEAPON_WORLD);
 	}
-
-	// handle death-zones
-	if(GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x+m_ProximityRadius/3.f, m_Pos.y-m_ProximityRadius/3.f) == TILE_DEATH ||
-		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x+m_ProximityRadius/3.f, m_Pos.y+m_ProximityRadius/3.f) == TILE_DEATH ||
-		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x-m_ProximityRadius/3.f, m_Pos.y-m_ProximityRadius/3.f) == TILE_DEATH ||
-		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x-m_ProximityRadius/3.f, m_Pos.y+m_ProximityRadius/3.f) == TILE_DEATH ||
+	if(GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_Death, m_Pos.x+m_ProximityRadius/50.f, m_Pos.y-m_ProximityRadius/3.f) == 1 ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_Death, m_Pos.x+m_ProximityRadius/3.f, m_Pos.y+m_ProximityRadius/3.f) == 1 ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_Death, m_Pos.x-m_ProximityRadius/3.f, m_Pos.y-m_ProximityRadius/3.f) == 1 ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_Death, m_Pos.x-m_ProximityRadius/3.f, m_Pos.y+m_ProximityRadius/3.f) == 1 ||
 		GameLayerClipped(m_Pos))
 	{
 		Die(m_pPlayer->GetCID(), WEAPON_WORLD);
 	}
-
+	if(GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x+m_ProximityRadius/50.f, m_Pos.y-m_ProximityRadius/50.f) == TILE_NOLASER ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x+m_ProximityRadius/50.f, m_Pos.y+m_ProximityRadius/50.f) == TILE_NOLASER ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x-m_ProximityRadius/50.f, m_Pos.y-m_ProximityRadius/50.f) == TILE_NOLASER ||
+		GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_TeeWorlds, m_Pos.x-m_ProximityRadius/50.f, m_Pos.y+m_ProximityRadius/50.f) == TILE_NOLASER ||
+		GameLayerClipped(m_Pos))
+	{
+		m_TakeDamage = false;
+		m_Core.m_Collide = false;
+		m_Core.m_Hooking = false;
+	}
+	// handle zones
+	HandleZones();
 	// handle Weapons
 	HandleWeapons();
 
@@ -570,7 +572,7 @@ void CCharacter::TickDefered()
 		m_ReckoningCore.Quantize();
 	}
 
-	//lastsentcore
+//	lastsentcore
 	vec2 StartPos = m_Core.m_Pos;
 	vec2 StartVel = m_Core.m_Vel;
 	bool StuckBefore = GameServer()->Collision()->TestBox(m_Core.m_Pos, vec2(28.0f, 28.0f));
@@ -718,39 +720,33 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 	m_DamageTaken++;
 
 	// create healthmod indicator
-	if(Server()->Tick() < m_DamageTakenTick+25)
-	{
-		// make sure that the damage indicators doesn't group together
-		GameServer()->CreateDamageInd(m_Pos, m_DamageTaken*0.25f, Dmg);
-	}
-	else
-	{
-		m_DamageTaken = 0;
-		GameServer()->CreateDamageInd(m_Pos, 0, Dmg);
-	}
-
-	if(Dmg)
-	{
-		if(m_Armor)
+	if(m_TakeDamage) {
+		if(Server()->Tick() < m_DamageTakenTick+25)
 		{
-			if(Dmg > 1)
-			{
+			// make sure that the damage indicators doesn't group together
+			GameServer()->CreateDamageInd(m_Pos, m_DamageTaken*0.25f, Dmg);
+		}
+		else
+		{
+			m_DamageTaken = 0;
+			GameServer()->CreateDamageInd(m_Pos, 0, Dmg);
+		}
+	};
+
+	if(Dmg && m_TakeDamage) {
+		if(m_Armor) { // take armor too
+			if(Dmg > 1)  { // take 1 heart
 				m_Health--;
 				Dmg--;
 			}
-
-			if(Dmg > m_Armor)
-			{
+			if(Dmg > m_Armor) { // properly take damage
 				Dmg -= m_Armor;
 				m_Armor = 0;
-			}
-			else
+			} else
 			{
 				m_Armor -= Dmg;
 				Dmg = 0;
-			}
-		}
-
+			}}
 		m_Health -= Dmg;
 	}
 
@@ -798,6 +794,11 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 	return true;
 }
 
+void CCharacter::HandleZones()
+{
+    return;
+}
+
 void CCharacter::Snap(int SnappingClient)
 {
 	int Id = m_pPlayer->GetCID();
@@ -807,7 +808,14 @@ void CCharacter::Snap(int SnappingClient)
 
 	if(NetworkClipped(SnappingClient))
 		return;
-
+	if(!m_TakeDamage) {
+	   CNetObj_Pickup *pP = static_cast<CNetObj_Pickup *>(Server()->SnapNewItem(NETOBJTYPE_PICKUP, m_ID, sizeof(CNetObj_Pickup)));
+				if(!pP)
+    		return;
+      pP->m_X = (int)m_Pos.x;//+Server()->Tick()%25;
+      pP->m_Y = (int)m_Pos.y-48;
+      pP->m_Type = POWERUP_ARMOR;
+};
 	CNetObj_Character *pCharacter = static_cast<CNetObj_Character *>(Server()->SnapNewItem(NETOBJTYPE_CHARACTER, Id, sizeof(CNetObj_Character)));
 	if(!pCharacter)
 		return;
@@ -853,17 +861,15 @@ void CCharacter::Snap(int SnappingClient)
 	if(m_pPlayer->GetCID() == SnappingClient || SnappingClient == -1 ||
 		(!g_Config.m_SvStrictSpectateMode && m_pPlayer->GetCID() == GameServer()->m_apPlayers[SnappingClient]->m_SpectatorID))
 	{
-		pCharacter->m_Health = m_Health;
-		pCharacter->m_Armor = m_Armor;
-		if(m_aWeapons[m_ActiveWeapon].m_Ammo > 0)
+	    if(m_TakeDamage)
+		{
+    		pCharacter->m_Health = m_Health;
+    		pCharacter->m_Armor = m_Armor;
+		};
+        if(m_aWeapons[m_ActiveWeapon].m_Ammo > 0)
 			pCharacter->m_AmmoCount = m_aWeapons[m_ActiveWeapon].m_Ammo;
 	}
-
-	if(pCharacter->m_Emote == EMOTE_NORMAL)
-	{
-		if(250 - ((Server()->Tick() - m_LastAction)%(250)) < 5)
-			pCharacter->m_Emote = EMOTE_BLINK;
-	}
-
+	// blink
+	pCharacter->m_Emote = (pCharacter->m_Emote == EMOTE_NORMAL && (250 - ((Server()->Tick() - m_LastAction)%(250)) < 5)) ? EMOTE_BLINK:pCharacter->m_Emote;
 	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }

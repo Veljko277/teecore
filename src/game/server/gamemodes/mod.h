@@ -1,5 +1,3 @@
-
-
 #ifndef GAME_SERVER_GAMEMODES_MOD_H
 #define GAME_SERVER_GAMEMODES_MOD_H
 #include <game/server/gamecontroller.h>
@@ -10,7 +8,5 @@ class CGameControllerMOD : public IGameController
 {
 public:
 	CGameControllerMOD(class CGameContext *pGameServer);
-	virtual void Tick();
-	// add more virtual functions here if you wish
 };
 #endif

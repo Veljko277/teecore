@@ -1,5 +1,3 @@
-
-
 #include <game/gamecore.h>
 #include <game/layers.h>
 #include <game/animation.h>

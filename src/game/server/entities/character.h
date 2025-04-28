@@ -1,5 +1,3 @@
-
-
 #ifndef GAME_SERVER_ENTITIES_CHARACTER_H
 #define GAME_SERVER_ENTITIES_CHARACTER_H
 
@@ -38,6 +36,7 @@ public:
 	void SetWeapon(int W);
 	void HandleWeaponSwitch();
 	void DoWeaponSwitch();
+	void HandleZones();
 
 	void HandleWeapons();
 	void HandleNinja();
@@ -86,6 +85,8 @@ private:
 	int m_ActiveWeapon;
 	int m_LastWeapon;
 	int m_QueuedWeapon;
+	bool m_TakeDamage;
+	int m_Zone;
 
 	int m_ReloadTimer;
 	int m_AttackTick;

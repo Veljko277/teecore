@@ -202,6 +202,9 @@ public:
 
 	int m_TriggeredEvents;
 
+	bool m_Hooking;
+	bool m_Collide;
+
 	void Init(CWorldCore *pWorld, CCollision *pCollision);
 	void Reset();
 	void Tick(bool UseInput, const CTuningParams* pTuningParams);

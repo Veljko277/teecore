@@ -5,6 +5,7 @@ config = NewConfig()
 config:Add(OptCCompiler("compiler"))
 config:Add(OptLibrary("zlib", "zlib.h", false))
 config:Finalize("config.lua")
+settings = NewSettings()
 
 -- data compiler
 function Script(name) return "python " .. name end
@@ -61,7 +62,6 @@ network_source = ContentCompile("network_source", "src/game/generated/protocol.c
 network_header = ContentCompile("network_header", "src/game/generated/protocol.h")
 server_content_source = ContentCompile("server_content_source", "src/game/generated/server_data.cpp")
 server_content_header = ContentCompile("server_content_header", "src/game/generated/server_data.h")
-
 AddDependency(network_source, network_header)
 AddDependency(server_content_source, server_content_header)
 
@@ -72,54 +72,41 @@ function Intermediate_Output(settings, input)
     return "objs/" .. string.sub(PathBase(input), string.len("src/") + 1) .. settings.config_ext
 end
 
-function build(settings)
-    -- apply compiler settings
-    config.compiler:Apply(settings)
+-- apply compiler settings
+config.compiler:Apply(settings)
 
-    --settings.objdir = Path("objs")
-    settings.cc.Output = Intermediate_Output
+--settings.objdir = Path("objs")
+settings.cc.Output = Intermediate_Output
 
-    if config.compiler.driver == "cl" then
-        settings.cc.flags:Add("/wd4244", "/wd4577")
-    else
-        settings.cc.flags:Add("-Wall", "-fno-exceptions")
-        settings.link.flags:Add("-fstack-protector", "-fstack-protector-all")
-    end
-    settings.cc.includes:Add("src")
-
-    settings.link.libs:Add("pthread")
-    -- add ICU
-    --if ExecuteSilent("pkg-config icu-uc icu-i18n") == 0 then end
-    settings.cc.flags:Add("`pkg-config --cflags icu-uc icu-i18n`")
-    settings.link.flags:Add("`pkg-config --libs icu-uc icu-i18n`")
-
-    zlib = Compile(settings, Collect("src/engine/external/zlib/*.c"))
-    settings.cc.includes:Add("src/engine/external/zlib")
-
-    -- build the small libraries
-    json = Compile(settings, "src/engine/external/json-parser/json.c")
-    md5 = Compile(settings, Collect("src/engine/external/md5/*.c"))
-    -- build game components
-    engine_settings = settings:Copy()
-    server_settings = engine_settings:Copy()
-    engine = Compile(engine_settings, Collect("src/engine/shared/*.cpp", "src/base/*.c"))
-    server = Compile(server_settings, Collect("src/engine/server/*.cpp"))
-    game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source)
-    game_server = Compile(settings, CollectRecursive("src/game/server/*.cpp"), server_content_source)
-    -- build server
-    server_exe = Link(server_settings, "teeworlds_srv", engine, server,
-        game_shared, game_server, zlib, md5, json)
-
-    -- make targets
-    s = PseudoTarget("server" .. "_" .. settings.config_name, server_exe, serverlaunch, icu_depends)
-
-    all = PseudoTarget(settings.config_name, c, s, v, m, t)
-    return all
+if config.compiler.driver == "cl" then
+    settings.cc.flags:Add("/wd4244", "/wd4577")
+else
+    settings.cc.flags:Add("-Wall", "-fno-exceptions")
+    settings.link.flags:Add("-fstack-protector", "-fstack-protector-all")
 end
+settings.cc.includes:Add("src")
 
-_settings = NewSettings()
-_settings.config_name = "release"
-_settings.debug = 0
-_settings.optimize = 0
+settings.link.libs:Add("pthread")
+-- add ICU
+settings.cc.flags:Add("`pkg-config --cflags icu-uc icu-i18n`")
+settings.link.flags:Add("`pkg-config --libs icu-uc icu-i18n`")
 
-build(_settings)
+zlib = Compile(settings, Collect("src/engine/external/zlib/*.c"))
+settings.cc.includes:Add("src/engine/external/zlib")
+
+engine_settings = settings:Copy()
+server_settings = engine_settings:Copy()
+engine = Compile(engine_settings, Collect("src/engine/shared/*.cpp", "src/base/*.c"))
+server = Compile(server_settings, Collect("src/engine/server/*.cpp"))
+game_shared = Compile(settings, Collect("src/game/*.cpp"), nethash, network_source)
+game_server = Compile(settings, CollectRecursive("src/game/server/*.cpp"), server_content_source)
+external = Compile(settings, Collect("src/engine/external/*.c"))
+-- build server
+server_exe = Link(server_settings, "teeworlds_srv", engine, server,
+    game_shared, game_server, zlib, external, json)
+
+-- make targets
+s = PseudoTarget("server" .. "_" .. settings.config_name, server_exe, serverlaunch, icu_depends)
+
+all = PseudoTarget(settings.config_name, c, s, v, m, t)
+return all

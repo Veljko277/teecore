@@ -272,6 +272,10 @@ void CGameContext::SendChat(int ChatterClientID, int Team, const char *pText)
 		str_format(aBuf, sizeof(aBuf), "*** %s", pText);
 	Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, Team!=CHAT_ALL?"teamchat":"chat", aBuf);
 
+	if(m_apPlayers[ChatterClientID]->m_Mute == true) {
+	   SendChatTarget(ChatterClientID,"Chat is unavailable for you");
+	   return;
+	}
 	if(Team == CHAT_ALL)
 	{
 		CNetMsg_Sv_Chat Msg;
@@ -995,7 +999,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 		{
 			CNetMsg_Cl_Emoticon *pMsg = (CNetMsg_Cl_Emoticon *)pRawMsg;
 
-			if(g_Config.m_SvSpamprotection && pPlayer->m_LastEmote && pPlayer->m_LastEmote+Server()->TickSpeed()*3 > Server()->Tick())
+			if(g_Config.m_SvSpamprotection && pPlayer->m_LastEmote && pPlayer->m_LastEmote+Server()->TickSpeed()/6 > Server()->Tick())
 				return;
 
 			pPlayer->m_LastEmote = Server()->Tick();
@@ -1181,8 +1185,26 @@ void CGameContext::ConBroadcast(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConSay(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
-	pSelf->SendChat(-1, CGameContext::CHAT_ALL, pResult->GetString(0));
+	return;
+    //CGameContext *pSelf = (CGameContext *)pUserData;
+	//pSelf->SendChat(-1, CGameContext::CHAT_ALL, pResult->GetString(0));
+}
+
+void CGameContext::ConMute(IConsole::IResult *pResult, void *pUserData)
+{
+    CGameContext *pSelf = (CGameContext *)pUserData;
+    int ClientID = clamp(pResult->GetInteger(0), 0, (int)MAX_CLIENTS-1);
+	char aBuf[256];
+	if(!pSelf->m_apPlayers[ClientID])
+		return;
+	if(pSelf->m_apPlayers[ClientID]->m_Mute == false) {
+		str_format(aBuf, sizeof(aBuf), "muted client %d", ClientID);
+		pSelf->m_apPlayers[ClientID]->m_Mute = true;
+	} else {
+        str_format(aBuf, sizeof(aBuf), "unmuted client %d", ClientID);
+	    pSelf->m_apPlayers[ClientID]->m_Mute = false;
+	};
+	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 }
 
 void CGameContext::ConSetTeam(IConsole::IResult *pResult, void *pUserData)
@@ -1662,6 +1684,7 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("restart", "?i", CFGFLAG_SERVER|CFGFLAG_STORE, ConRestart, this, "Restart in x seconds (0 = abort)");
 	Console()->Register("broadcast", "r", CFGFLAG_SERVER, ConBroadcast, this, "Broadcast message");
 	Console()->Register("say", "r", CFGFLAG_SERVER, ConSay, this, "Say in chat");
+	Console()->Register("mute", "i", CFGFLAG_SERVER, ConMute, this, "Mute");
 	Console()->Register("set_team", "ii?i", CFGFLAG_SERVER, ConSetTeam, this, "Set team of player to team");
 	Console()->Register("set_team_all", "i", CFGFLAG_SERVER, ConSetTeamAll, this, "Set team of all players to team");
 	Console()->Register("swap_teams", "", CFGFLAG_SERVER, ConSwapTeams, this, "Swap the current teams");
@@ -1698,12 +1721,13 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 
 	//Get zones
 	m_ZoneHandle_TeeWorlds = m_Collision.GetZoneHandle("teeworlds");
+	m_ZoneHandle_Death = m_Collision.GetZoneHandle("death");
+	m_ZoneHandle_Zones = m_Collision.GetZoneHandle("zones");
 
 	// reset everything here
 	//world = new GAMEWORLD;
 	//players = new CPlayer[MAX_CLIENTS];
 
-	// select gametype
 	m_pController = new CGameControllerMOD(this);
 
 	// setup core world
@@ -1714,21 +1738,11 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 	CMapItemLayerTilemap *pTileMap = m_Layers.GameLayer();
 	CTile *pTiles = (CTile *)Kernel()->RequestInterface<IMap>()->GetData(pTileMap->m_Data);
 
-
-
-
-	/*
-	num_spawn_points[0] = 0;
-	num_spawn_points[1] = 0;
-	num_spawn_points[2] = 0;
-	*/
-
 	for(int y = 0; y < pTileMap->m_Height; y++)
 	{
-		for(int x = 0; x < pTileMap->m_Width; x++)
+		for(int x = 1; x < pTileMap->m_Width; x++)
 		{
 			int Index = pTiles[y*pTileMap->m_Width+x].m_Index;
-
 			if(Index >= ENTITY_OFFSET)
 			{
 				vec2 Pivot(x*32.0f+16.0f, y*32.0f+16.0f);
@@ -1746,12 +1760,6 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 						break;
 					case ENTITY_SPAWN_BLUE:
 						m_pController->OnEntity("buleSpawn", Pivot, P0, P1, P2, P3, -1);
-						break;
-					case ENTITY_FLAGSTAND_RED:
-						m_pController->OnEntity("redFlag", Pivot, P0, P1, P2, P3, -1);
-						break;
-					case ENTITY_FLAGSTAND_BLUE:
-						m_pController->OnEntity("buleFlag", Pivot, P0, P1, P2, P3, -1);
 						break;
 					case ENTITY_ARMOR:
 						m_pController->OnEntity("armor", Pivot, P0, P1, P2, P3, -1);
@@ -1806,8 +1814,6 @@ void CGameContext::OnInit(/*class IKernel *pKernel*/)
 			}
 		}
 	}
-
-	//game.world.insert_entity(game.Controller);
 }
 
 void CGameContext::OnShutdown()

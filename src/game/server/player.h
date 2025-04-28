@@ -54,6 +54,7 @@ public:
 	int m_SpectatorID;
 
 	bool m_IsReady;
+	bool m_Mute = false; // muted on entering
 
 	//
 	int m_Vote;

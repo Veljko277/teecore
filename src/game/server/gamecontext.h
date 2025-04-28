@@ -68,6 +68,7 @@ class CGameContext : public IGameServer
 	static void ConRestart(IConsole::IResult *pResult, void *pUserData);
 	static void ConBroadcast(IConsole::IResult *pResult, void *pUserData);
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);
+	static void ConMute(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetTeam(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetTeamAll(IConsole::IResult *pResult, void *pUserData);
 	static void ConSwapTeams(IConsole::IResult *pResult, void *pUserData);
@@ -90,6 +91,8 @@ public:
 	int m_ChatPrintCBIndex;
 public:
 	int m_ZoneHandle_TeeWorlds;
+	int m_ZoneHandle_Death;
+	int m_ZoneHandle_Zones;
 
 public:
 	IServer *Server() const { return m_pServer; }
@@ -203,7 +206,7 @@ public:
 	virtual const char *GameType();
 	virtual const char *Version();
 	virtual const char *NetVersion();
-};
+};;
 
 inline int64_t CmaskAll() { return -1LL; }
 inline int64_t CmaskOne(int ClientID) { return 1LL<<ClientID; }

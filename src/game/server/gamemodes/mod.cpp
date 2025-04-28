@@ -1,8 +1,5 @@
-
-
 #include "mod.h"
 #include <game/generated/protocol.h>
-#include <new>
 #include <engine/shared/config.h>
 
 CGameControllerMOD::CGameControllerMOD(class CGameContext *pGameServer)
@@ -13,10 +10,4 @@ CGameControllerMOD::CGameControllerMOD(class CGameContext *pGameServer)
 	m_pGameType = "MOD";
 
 	//m_GameFlags = GAMEFLAG_TEAMS; // GAMEFLAG_TEAMS makes it a two-team gamemode
-}
-
-void CGameControllerMOD::Tick()
-{
-	// this is the main part of the gamemode, this function is run every tick
-	IGameController::Tick();
 }

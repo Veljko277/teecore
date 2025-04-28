@@ -1,5 +1,3 @@
-
-
 #include "layers.h"
 #include "gamecore.h"
 

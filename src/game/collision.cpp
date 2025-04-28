@@ -9,6 +9,7 @@
 #include <engine/kernel.h>
 
 #include <game/mapitems.h>
+#include <game/zones.h>
 #include <game/layers.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
@@ -176,7 +177,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y)
 
 				if(InsideQuad(p0, p1, p2, p3, vec2(x, y)))
 				{
-					Index = pQuads[q].m_ColorEnvOffset;
+					Index = 1;//pQuads[q].m_ColorEnvOffset;
 				}
 			}
 		}
